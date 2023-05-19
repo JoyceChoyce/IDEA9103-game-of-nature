@@ -1,0 +1,119 @@
+body {
+	margin: 0;
+	overflow: hidden;
+	font-family: Arial, sans-serif;
+	font-variant: small-caps;
+	background-color: #f4f4f4;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.slider, button {
+	display: block;
+	margin: 5px auto;
+	align-items: center;
+	font-family: Arial, sans-serif;
+	font-variant: small-caps;
+	font-size: 18px;
+	font-weight: 900;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	color: rgb(255, 255, 255);
+	width: 220px;
+	height: 40px;
+}
+
+.slider {
+	width: 70%;
+	height: 50px;
+	justify-content: space-between;
+}
+
+button {
+	background-color: rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+	transition: background-color 0.5s ease, box-shadow 0.3s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(10px);
+}
+
+button:hover {
+	background-color: rgba(4, 50, 156, 0.7);
+	color: rgba(255, 255, 255, 1);
+	transform: scale(1.05);
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+	animation: glowing 2s infinite;
+}
+
+/* Modify the button state when pressed */
+button:active {
+	background-color: rgba(17, 66, 108, 0.765);
+	color: rgba(255, 255, 255, 1);
+	animation: glowing 3s infinite;
+}
+
+
+/* Create a dynamic halo animation */
+@keyframes glowing {
+	0% {
+		box-shadow: 0 0 0.5px  #ffffff7c, 0 0 4px #ffffff7c, 0 0 5px #ffffff7c, 0 0 6px #ffffff7c;
+	}
+
+	50% {
+		box-shadow: 0 0 8px #ffffff7c, 0 0 8px #ffffff7c, 0 0 10px #ffffff7c, 0 0 12px #ffffff7c;
+	}
+
+	100% {
+		box-shadow: 0 0 0.5px  #ffffff7c, 0 0 4px #ffffff7c, 0 0 5px #ffffff7c, 0 0 6px  #ffffff7c;
+	}
+}
+
+#controls {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	border-radius: 5px;
+	width: 220px;
+	display: flex;
+	margin-left: 10px;
+	margin-top: 10px;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+#controls div {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	color: #ffffff;
+	font-size: 14px;
+	font-family: Arial, sans-serif;
+	margin-bottom: 5px;
+	text-align: left;
+	top: 10px;
+	left: 10px;
+	background-color: rgba(255, 255, 255, 0.1);
+	transition: background-color 0.5s ease, box-shadow 0.3s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(10px);
+	padding: 8px;
+	border-radius: 5px;
+	width: 220px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+#controls p {
+	margin: 0;
+}

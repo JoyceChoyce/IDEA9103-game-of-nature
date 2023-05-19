@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+   <!-- <script src="sketch.js"></script> -->
+   <style>
+       body {
+           margin: 0;
+           overflow: hidden;
+       }
+   </style>
+</head>
+
+
+<body>
+</body>
+<script>
+   let cvsTexture, mainGraphic
+   let alignSlider, cohesionSlider, separationSlider;
+
+
+   function preload() {
+       /*
+           Other Code...
+       */
+   }
+   let c1, c2;
+
+
+   let predators = [];
+   let preys = [];
+   let clouds = [];
+   let trashes = [];
+
+
+   function setup() {
+       frameRate(40)
+
+
+       createCanvas(windowWidth, windowHeight - 30);
+       alignSlider = createSlider(0, 2, 1.5, 0.1);
+       cohesionSlider = createSlider(0, 2, 1, 0.1);
+       separationSlider = createSlider(0, 2, 2, 0.1);
+       addPreyButton = createButton('Prey');
+       // button.position(0, 0);
+       addPreyButton.mousePressed(addPrey);
+
+
+       addPredatorButton = createButton('Predator');
+       // button.position(0, 0);
+       addPredatorButton.mousePressed(addPredator);
+
+
+       addTrashButton = createButton('Trash');
+       // button.position(0, 0);
+       addTrashButton.mousePressed(addTrash);
+
+
+
+
+       resetButton = createButton('Reset');
+       // button.position(0, 0);
+       resetButton.mousePressed(reset);
+       noStroke();
+       for (let i = 0; i < 100; i++) {
+           preys.push(new Prey(random(width), random(height)));
+       }
+       for (let i = 0; i < 7; i++) {
+           predators.push(new Predator(random(width), random(height)));
+       }
+       for (let i = 0; i < 5; i++) {
+           trashes.push(new Trash());
+       }
+       // for (let i = 0; i < 20; i++) {
+       //     clouds.push(new Cloud());
+       // }
+   }
+
+
+   function addPrey() {
+       for (let i = 0; i < 10; i++) {
+           preys.push(new Prey(random(width), random(height)));
+       }
+   }
+   function addPredator() {
+       predators.push(new Predator(random(width), random(height)));
+   }
+
+
+   function addTrash() {
+       trashes.push(new Trash());
+   }
+
+
+   function reset() {
+       preys = [];
+       clouds = [];
+       trashes = [];
+       for (let i = 0; i < 120; i++) {
+           preys.push(new Prey(random(width), random(height)));
+       }
+       for (let i = 0; i < 5; i++) {
+           predators.push(new Predator(random(width), random(height)));
+       }
+       for (let i = 0; i < 10; i++) {
+           trashes.push(new Trash());
+       }
+   }
+
+
+   function draw() {
+       let black = color(0, 0, 0)
+       c1 = color(185, 220, 242);
+       c1 = lerpColor(c1, black, trashes.length / 45);
+       c2 = color(9, 116, 241);
+       c2 = lerpColor(c2, black, trashes.length / 50);
+       // background(9, 9, 121)
+
+
+       for (let y = 0; y < height; y++) {
+           n = map(y, 0, height, 0, 1);
+           let newc = lerpColor(c1, c2, n);
+           stroke(newc);
+           let yOffset = sin(noise(frameCount) * noise(0.05)) * noise(30); // Adjust the frequency and amplitude as desired
+
+
+           line(0, y + yOffset, width, y + yOffset);
+       }
+
+
+
+
+       noStroke()
+
+
+       for (let trash of trashes) {
+           trash.update(predators);
+           trash.display();
+       }
+
+
+
+
+       for (let predator of predators) {
+           predator.update(predators, preys);
+           predator.display();
+       }
+
+
+       for (let prey of preys) {
+           prey.update(predators, preys);
+           prey.display();
+       }
+   }
+
+
+   function windowResized() {
+       resizeCanvas(windowWidth, windowHeight);
+   }
+
+
+   class Predator {
+       constructor(x, y) {
+           this.position = createVector(x, y);
+           this.velocity = createVector(random(-1, 1), random(-1, 1));
+           this.acceleration = createVector(0, 0);
+           this.normalSpeed = 1;
+           this.maxSpeed = 3.5;
+           this.energy = 100;
+           this.preyEaten = 0;
+           this.eatCooldown = 0;
+       }
+
+
+       eat(preys) {
+           if (this.preyEaten < 3) {
+               for (let i = preys.length - 1; i >= 0; i--) {
+                   let distance = this.position.dist(preys[i].position);
+                   if (distance < 35) {
+                       preys.splice(i, 1);
+                       this.preyEaten++;
+                       this.energy = min(this.energy + 50, 100);
+                       this.velocity.mult(0.8);
+                       this.eatCooldown = frameCount; // 5-second cooldown
+                   }
+               }
+           }
+           if (frameCount - this.eatCooldown > 400) {
+               if (this.preyEaten > 0) {
+                   this.preyEaten = 0;
+               }
+           }
+       }
+
+
+       chase(preys) {
+           let closestPrey = null;
+           let closestDistance = Infinity;
+
+
+           for (let prey of preys) {
+               let distance = this.position.dist(prey.position);
+               if (distance < closestDistance) {
+                   closestPrey = prey;
+                   closestDistance = distance;
+               }
+           }
+
+
+           if (closestPrey && closestDistance < 100 && this.energy > 0) {
+               let force = p5.Vector.sub(closestPrey.position, this.position);
+               force.normalize();
+               force.mult(this.maxSpeed);
+               this.acceleration.add(force);
+               this.energy -= 0.10;
+           } else {
+               this.acceleration.mult(0);
+               this.energy = min(this.energy + 0.5, 100);
+           }
+       }
+
+
+
+
+       update(predators, preys) {
+           this.preyEaten == 0 ? this.chase(preys) : null
+           this.eat(preys)
+           this.velocity.add(this.acceleration);
+           this.velocity.limit(this.energy > 0 && this.preyEaten == 0 ? this.maxSpeed : this.normalSpeed);
+           this.position.add(this.velocity);
+           this.acceleration.mult(0);
+           this.edges();
+       }
+
+
+       display() {
+           this.preyEaten > 0 ? fill(255, 200, 0) : fill(255, 0, 0);
+
+
+           ellipse(this.position.x, this.position.y, 20, 20);
+       }
+
+
+       edges() {
+           if (this.position.x < 0 || this.position.x > width) {
+               this.velocity.x *= -1;
+           }
+           if (this.position.y < 0 || this.position.y > height) {
+               this.velocity.y *= -1;
+           }
+       }
+   }
+
+
+   // https://editor.p5js.org/codingtrain/sketches/ry4XZ8OkN
+   class Boid {
+       constructor() {
+           this.position = createVector(random(width), random(height));
+           this.velocity = p5.Vector.random2D();
+           this.velocity.setMag(random(2, 4));
+           this.acceleration = createVector();
+           this.maxForce = 0.2;
+           this.maxSpeed = 5;
+       }
+
+
+
+
+       align(boids) {
+           let perceptionRadius = 25;
+           let steering = createVector();
+           let total = 0;
+           for (let other of boids) {
+               let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+               if (other != this && d < perceptionRadius) {
+                   steering.add(other.velocity);
+                   total++;
+               }
+           }
+           if (total > 0) {
+               steering.div(total);
+               steering.setMag(this.maxSpeed);
+               steering.sub(this.velocity);
+               steering.limit(this.maxForce);
+           }
+           return steering;
+       }
+
+
+       separation(boids) {
+           let perceptionRadius = 24;
+           let steering = createVector();
+           let total = 0;
+           for (let other of boids) {
+               let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+               if (other != this && d < perceptionRadius) {
+                   let diff = p5.Vector.sub(this.position, other.position);
+                   diff.div(d * d);
+                   steering.add(diff);
+                   total++;
+               }
+           }
+           if (total > 0) {
+               steering.div(total);
+               steering.setMag(this.maxSpeed);
+               steering.sub(this.velocity);
+               steering.limit(this.maxForce);
+           }
+           return steering;
+       }
+
+
+       cohesion(boids) {
+           let perceptionRadius = 50;
+           let steering = createVector();
+           let total = 0;
+           for (let other of boids) {
+               let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+               if (other != this && d < perceptionRadius) {
+                   steering.add(other.position);
+                   total++;
+               }
+           }
+           if (total > 0) {
+               steering.div(total);
+               steering.sub(this.position);
+               steering.setMag(this.maxSpeed);
+               steering.sub(this.velocity);
+               steering.limit(this.maxForce);
+           }
+           return steering;
+       }
+
+
+       flock(boids) {
+           let alignment = this.align(boids);
+           let cohesion = this.cohesion(boids);
+           let separation = this.separation(boids);
+
+
+           alignment.mult(alignSlider.value());
+           cohesion.mult(cohesionSlider.value());
+           separation.mult(separationSlider.value());
+
+
+           this.acceleration.add(alignment);
+           this.acceleration.add(cohesion);
+           this.acceleration.add(separation);
+       }
+
+
+       update() {
+           this.position.add(this.velocity);
+           this.velocity.add(this.acceleration);
+           this.velocity.limit(this.maxSpeed);
+           this.acceleration.mult(0);
+       }
+   }
+
+
+
+
+   class Prey extends Boid {
+       constructor(x, y) {
+           super();
+           this.chased = false
+       }
+
+
+       avoid(predator) {
+           let isCloseToAnyPredator = false
+           for (let predator of predators) {
+               let distance = this.position.dist(predator.position);
+
+
+               if (distance < 50) {
+                   isCloseToAnyPredator = true
+                   let force = p5.Vector.sub(this.position, predator.position);
+                   force.normalize();
+                   force.mult(this.maxSpeed);
+                   this.acceleration.add(force);
+                   this.chased = true
+               }
+           }
+
+
+           if (this.chased && !isCloseToAnyPredator) {
+               this.chased = false
+           }
+       }
+
+
+       update(predators, preys) {
+           this.avoid(predators);
+           this.flock(preys);
+           super.update();
+           this.edges();
+       }
+
+
+       display() {
+           this.chased ? fill(225, 255, 225) : fill(0, 255, 0);
+           ellipse(this.position.x, this.position.y, 10, 10);
+       }
+
+
+       edges() {
+           if (this.position.x < 0 || this.position.x > width) {
+               this.velocity.x *= -1;
+           }
+           if (this.position.y < height * 0.25 || this.position.y > height) {
+               this.velocity.y *= -1;
+           }
+       }
+   }
+   class Cloud {
+       constructor() {
+           this.position = createVector(random(width), random(height * 0.25));
+           this.velocity = createVector(random(0.5, 1.5), 0);
+           this.size = random(30, 60);
+       }
+
+
+       update() {
+           this.position.add(this.velocity);
+           if (this.position.x > width + this.size / 2) {
+               this.position.x = -this.size / 2;
+           }
+       }
+
+
+       display() {
+           fill(255, 255, 255, 200);
+           ellipse(this.position.x, this.position.y, this.size);
+       }
+   }
+
+
+   class Trash {
+       constructor() {
+           this.x = random(width);
+           this.y = random(height);
+           this.radius = random(10, 25);
+           this.phase = random(TWO_PI);
+       }
+
+
+       update(predators) {
+           this.phase += 0.01;
+           this.y += sin(this.phase) * 0.5;
+
+
+           for (let i = predators.length - 1; i >= 0; i--) {
+               let distance = createVector(this.x, this.y).dist(predators[i].position);
+               if (distance < 25) {
+                   predators.splice(i, 1);
+               }
+           }
+       }
+
+
+       display() {
+           noStroke();
+           fill(0, 119, 190, 150);
+           ellipse(this.x, this.y, this.radius);
+       }
+   }
+
+
+</script>
+
+
+</html>
+
