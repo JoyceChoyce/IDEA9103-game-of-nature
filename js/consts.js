@@ -36,7 +36,7 @@ let ts = Array(NUM_STREAMS).fill(255);
 
 //Music
 const water = new Tone.Player({
-    url: "/static/water.wav",
+    url: "./static/water.wav",
     volume: -5,
 }).toDestination();
 
@@ -45,7 +45,7 @@ const water = new Tone.Player({
 //【Day One】
 // Publisher - Warner Bros. Records & Sony Music Entertainment
 const player = new Tone.Player({
-    url: "/static/bgmusic.mp3",
+    url: "./static/bgmusic.mp3",
     autostart: false,
     loop: true,
 }).toDestination();
