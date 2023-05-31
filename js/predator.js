@@ -6,9 +6,9 @@ class Predator {
         this.position = createVector(x, y); // Position represented as a 2D vector
         this.velocity = createVector(random(-1, 1), random(-1, 1)); // Velocity represented as a 2D vector with random direction
         this.acceleration = createVector(0, 0); // Acceleration is initially set to zero
-        this.normalSpeed = 1; // Normal speed of the Predator when not chasing prey (Yellow)
-        this.maxSpeed = 3.5; // Maximum speed the Predator can reach while chasing (Red)
-        this.energy = 100; // Current energy level of the Predator
+        this.normalSpeed = 0.8; // Normal speed of the Predator when not chasing prey (Yellow)
+        this.maxSpeed = 3.25; // Maximum speed the Predator can reach while chasing (Red)
+        this.energy = 125; // Current energy level of the Predator
         this.preyEaten = 0; // Number of preys eaten, resets after cool down time
         this.eatCooldown = 0; // Time of the last eaten prey
     }
