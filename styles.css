@@ -1,0 +1,165 @@
+/* Body style setting */
+body {
+	margin: 0;
+	overflow: hidden;
+	font-family: Arial, sans-serif;
+	font-variant: small-caps;
+	background-color: #f4f4f4;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	/* Add fade-in animation to body */
+	animation: bodyFadeIn 2s ease-in-out;
+}
+
+/* Keyframes for body fade-in animation */
+@keyframes bodyFadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+/* Shared styling for slider and button */
+.slider, button {
+	display: block;
+	margin: 5px auto;
+	align-items: center;
+	font-family: Arial, sans-serif;
+	font-variant: small-caps;
+	font-size: 18px;
+	font-weight: 900;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	color: rgb(255, 255, 255);
+	width: 220px;
+	height: 40px;
+	/* Add scale transition */
+	transition: transform 0.3s;
+}
+
+/* Scale slider and button on hover */
+.slider:hover, button:hover {
+	transform: scale(1.1);
+}
+
+/* Slider specific styling */
+.slider {
+	width: 70%;
+	height: 50px;
+	justify-content: space-between;
+}
+
+/* Button specific styling */
+button {
+	background-color: rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+	/* Add transition effects */
+	transition: background-color 0.5s ease, box-shadow 0.3s ease, transform 0.3s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(10px);
+}
+
+/* Change button style on hover */
+button:hover {
+	background-color: rgba(4, 50, 156, 0.7);
+	color: rgba(255, 255, 255, 1);
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+	/* Add glowing animation */
+	animation: glowing 2s infinite;
+}
+
+/* Change button style on active */
+button:active {
+	background-color: rgba(57, 151, 233, 0.765);
+	color: rgba(255, 255, 255, 1);
+	/* Add glowing animation */
+	animation: glowing 3s infinite;
+}
+
+/* Keyframes for glowing animation */
+@keyframes glowing {
+	0% {
+		box-shadow: 0 0 0.5px  #ffffff7c, 0 0 4px #ffffff7c, 0 0 5px #ffffff7c, 0 0 6px #ffffff7c;
+	}
+
+	50% {
+		box-shadow: 0 0 8px #ffffff7c, 0 0 8px #ffffff7c, 0 0 10px #ffffff7c, 0 0 12px #ffffff7c;
+	}
+
+	100% {
+		box-shadow: 0 0 0.5px  #ffffff7c, 0 0 4px #ffffff7c, 0 0 5px #ffffff7c, 0 0 6px  #ffffff7c;
+	}
+}
+
+/* Controls container styling */
+#controls {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	border-radius: 5px;
+	width: 220px;
+	display: flex;
+	margin-left: 10px;
+	margin-top: 10px;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+	/* Add all transition */
+	transition: all 0.5s ease;
+}
+
+/* Scale controls on hover */
+#controls:hover {
+	transform: scale(1.05);
+}
+
+/* Styling for div within controls */
+#controls div {
+	display: flex;
+	justify-content: space-between;
+	color: #ffffff;
+	font-size: 14px;
+	font-family: Arial, sans-serif;
+	margin-bottom: 5px;
+	text-align: left;
+	top: 10px;
+	left: 10px;
+	background-color: rgba(255, 255, 255, 0.1);
+	/* Add transition effects */
+	transition: background-color 0.5s ease, box-shadow 0.3s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(10px);
+	padding: 8px;
+	border-radius: 5px;
+	width: 220px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: wrap;
+	/* Add scale transition */
+	transition: transform 0.3s;
+}
+
+/* Scale div within controls on hover */
+#controls div:hover {
+	transform: scale(1.05);
+}
+
+/* Styling for p within controls */
+#controls p {
+	margin: 0;
+	/* Add fade-in animation */
+	animation: fadeIn 2s ease-in-out;
+}
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
