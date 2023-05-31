@@ -8,8 +8,8 @@ class Boid {
         this.velocity.setMag(random(2, 4));
         // Boid's acceleration and force limiters
         this.acceleration = createVector();
-        this.maxForce = 0.2;
-        this.maxSpeed = 5;
+        this.maxForce = 0.35;
+        this.maxSpeed = 3.75;
     }
 
     // Align boid to the average heading of other boids in its perception range
