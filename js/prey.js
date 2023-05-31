@@ -15,7 +15,7 @@ class Prey extends Boid {
             let distance = this.position.dist(predator.position);
 
             // If the Predator is within a certain distance...
-            if (distance < 50) {
+            if (distance < PREY_PREDATOR_PERCEPTION_RANGE) {
                 isCloseToAnyPredator = true
                 // Calculate the vector pointing away from the Predator.
                 let force = p5.Vector.sub(this.position, predator.position);
